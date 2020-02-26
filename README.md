@@ -1,10 +1,8 @@
 # Video_3D_Pose_Estimation
 3D pose estimation for video : [LCRNet2D](https://thoth.inrialpes.fr/src/LCR-Net/)+[VideoPose3D](https://github.com/facebookresearch/VideoPose3D)
 
-![ad](https://github.com/YangDi666/LCRNet-2D-3D-Pose-Estimation/blob/master/demo/result_010817395615_0real_im_1_1.png)
+![ad]()
 
-## Introduction  
-- [LCR-Net Multi-person 2D and 3D Pose Detection](https://thoth.inrialpes.fr/src/LCR-Net/) is realised by INRIA THOTH team and this code is for training the model.
 
 ### Quick start
 
