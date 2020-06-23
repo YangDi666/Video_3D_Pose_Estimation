@@ -9,6 +9,14 @@
 ```
 git clone https://github.com/YangDi666/Video_3D_Pose_Estimation.git
 ```
+
+Download the pretrained videopose model
+```
+mkdir checkpoint
+cd checkpoint
+```
+videopose model [address](https://dl.fbaipublicfiles.com/video-pose-3d/cpn-pt-243.bin)
+
 #### I have 2D pose
 
 ```
