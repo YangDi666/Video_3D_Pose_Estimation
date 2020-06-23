@@ -82,6 +82,7 @@ def main():
     keypoints_symmetry = metadata['keypoints_symmetry']
     kps_left, kps_right = list(keypoints_symmetry[0]), list(keypoints_symmetry[1])
     joints_left, joints_right = list([4, 5, 6, 11, 12, 13]), list([1, 2, 3, 14, 15, 16])
+    p2d=keypoints.tolist()
 
     # normlization keypoints  假设use the camera parameter
     keypoints = normalize_screen_coordinates(keypoints[..., :2], w=1000, h=1002)
@@ -119,6 +120,33 @@ def main():
     prediction = evaluate(gen,model_pos, return_predictions=True)
     #with open('results_'+args.viz_output[:-4]+'.json', 'w') as result_file:
         #json.dump(res, result_file)
+    
+    #save json file
+    mapp3d=[3,6,2,5,1,4,16,13,15,12,14,11,10]
+    mapp2d=[16,15,14,13,12,11,10,9,8,7,6,5,0]
+    njts=13
+    p3d=prediction.tolist()
+    #p2d=keypoints.tolist()
+    res={'njts':13, 'K':5, 'frames':[]}
+    for i in range(len(p3d)):
+        posev3d=p3d[i]
+        posev2d=p2d[i]
+        posev3d=[-posev3d[j][0] for j in mapp3d]+[-posev3d[k][1] for k in mapp3d]+[posev3d[l][2] for l in mapp3d]
+        posev2d=[posev2d[j][0] for j in mapp2d]+[posev2d[k][1] for k in mapp2d]
+        x0=((posev3d[4]+posev3d[5])/2+(posev3d[10]+posev3d[11])/2)/2
+        y0=((posev3d[4+njts]+posev3d[5+njts])/2+(posev3d[10+njts]+posev3d[11+njts])/2)/2
+        z0=((posev3d[4+2*njts]+posev3d[5+2*njts])/2+(posev3d[10+2*njts]+posev3d[11+2*njts])/2)/2
+        posev3d=[posev3d[x]-x0 for x in range(njts)]+[posev3d[y]-y0 for y in range(njts,2*njts)]+[posev3d[z]-z0 for z in range(2*njts,3*njts)]
+        det={'pose2d': posev2d, 'pose3d': posev3d}
+        people=[]
+        p2d_int=[int(i) for i in posev2d]
+        if p2d_int.count(0)<26:
+            people.append(det)
+        res['frames'].append(people)
+
+    with open('results_'+args.viz_output[:-4]+'_lcrnet+v3d.json', 'w') as result_file:
+        json.dump(res, result_file)
+    print('results_'+args.viz_output[:-4]+'.json saved')
 
 
     rot = np.array([ 0.14070565, -0.15007018, -0.7552408 ,  0.62232804], dtype=np.float32)
@@ -130,11 +158,12 @@ def main():
     input_keypoints = image_coordinates(input_keypoints[..., :2], w=1000, h=1002)
     
     # Save json file
-    pre=prediction.tolist()
-    res={'pose3d': pre}
-    with open('results_'+args.viz_output[:-4]+'_lcrnet+v3d.json', 'w') as result_file:
-        json.dump(res, result_file)
-    print('results_'+args.viz_output[:-4]+'.json saved')
+    #pre=prediction.tolist()
+    #res={'pose3d': pre}
+    #with open('results_'+args.viz_output[:-4]+'_lcrnet+v3d.json', 'w') as result_file:
+        #json.dump(res, result_file)
+    #print('results_'+args.viz_output[:-4]+'.json saved')
+    
     ckpt, time3 = ckpt_time(time2)
     print('------- generate reconstruction 3D data spends {:.2f} seconds'.format(ckpt))
 

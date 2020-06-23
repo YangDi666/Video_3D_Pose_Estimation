@@ -59,8 +59,8 @@ def get_pose( imagename, modelname, gpuid):
         frame_h = int(video_reader.get(cv2.CAP_PROP_FRAME_HEIGHT))
         frame_w = int(video_reader.get(cv2.CAP_PROP_FRAME_WIDTH))
 
-        #for i in tqdm(range(nb_frames-1)):
-        for i in tqdm(range(100,110)):
+        for i in tqdm(range(nb_frames-1)):
+        #for i in tqdm(range(100,110)):
             _, image = video_reader.read()
             # image=cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
             img_output_list += [(image, None)]
